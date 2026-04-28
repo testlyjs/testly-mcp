@@ -80,10 +80,14 @@ npm run dev        # Watch mode
 
 ## Publishing to npm
 
-Manual (no CI/CD):
-1. `npm run build`
-2. Bump version in `package.json`
-3. `npm publish --access public`
+Automated via GitHub Actions (`.github/workflows/publish.yml`). Trigger: create a GitHub Release.
+
+The workflow runs `npm ci && npm run build && npm publish --provenance --access public` using npm Trusted Publishers (OIDC) — no `NPM_TOKEN` secret needed.
+
+**To publish a new version:**
+1. Bump version in `package.json` and commit
+2. Create a GitHub Release with a new tag (e.g. `v0.1.1`)
+3. The workflow publishes automatically with provenance
 
 ## Key Source Files
 
