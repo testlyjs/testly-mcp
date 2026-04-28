@@ -2,11 +2,18 @@
   "name": "@testlyjs/mcp",
   "version": "0.1.0",
   "description": "Testly MCP server — create and manage A/B tests from Claude Code, Cursor, Windsurf and any MCP-compatible AI tool",
-  "keywords": ["testly", "ab-testing", "mcp", "model-context-protocol", "claude", "cursor"],
+  "keywords": [
+    "testly",
+    "ab-testing",
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "cursor"
+  ],
   "homepage": "https://testly.com.br",
   "repository": {
     "type": "git",
-    "url": "https://github.com/testlyjs/testly-mcp.git"
+    "url": "git+https://github.com/testlyjs/testly-mcp.git"
   },
   "license": "MIT",
   "type": "module",
@@ -14,7 +21,9 @@
   "bin": {
     "testly-mcp": "dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "node --watch dist/index.js",

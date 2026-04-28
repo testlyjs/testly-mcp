@@ -7,7 +7,7 @@ See workspace root [`CLAUDE.md`](../CLAUDE.md) for the full system context.
 ## Package Info
 
 - **npm name:** `@testlyjs/mcp`
-- **version:** `0.1.0` (not yet published — run `npm login` then `npm publish --access public`)
+- **version:** `0.1.0` (published to npm 2026-04-28)
 - **runtime:** Node.js ≥18, ESM
 - **entry:** `dist/index.js` (compiled from `src/index.ts`)
 - **bin:** `testly-mcp`
