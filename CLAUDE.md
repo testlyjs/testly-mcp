@@ -7,30 +7,47 @@ See workspace root [`CLAUDE.md`](../CLAUDE.md) for the full system context.
 ## Package Info
 
 - **npm name:** `@testlyjs/mcp`
-- **version:** `0.1.0` (published to npm 2026-04-28)
+- **version:** `0.2.0` (published to npm 2026-04-28; v0.2.0 adds setup wizard + config-based key)
 - **runtime:** Node.js ≥18, ESM
 - **entry:** `dist/index.js` (compiled from `src/index.ts`)
 - **bin:** `testly-mcp`
 
 ## How Users Install It
 
-### Claude Code
+### Step 1 — Setup wizard (all editors)
 ```bash
-claude mcp add testly -e TESTLY_API_KEY=tk_live_... -- npx @testlyjs/mcp
+npx @testlyjs/mcp setup
+```
+Stores `tk_live_` and `tk_test_` keys in `~/.testly/config.json`. Never in shell history.
+
+### Step 2a — Claude Code
+```bash
+claude mcp add testly -- npx @testlyjs/mcp
 ```
 
-### Cursor / Windsurf (mcp.json)
+### Step 2b — Cursor / Windsurf (mcp.json) — no key needed
 ```json
 {
   "mcpServers": {
     "testly": {
       "command": "npx",
-      "args": ["@testlyjs/mcp"],
-      "env": { "TESTLY_API_KEY": "tk_live_..." }
+      "args": ["@testlyjs/mcp"]
     }
   }
 }
 ```
+
+### Dev Mode (any editor)
+```json
+"env": { "TESTLY_ENV": "development" }
+```
+MCP uses `tk_test_` key from config, sees only `is_test=true` experiments.
+
+### Backward compat — explicit env var still works
+```bash
+claude mcp add testly -e TESTLY_API_KEY=tk_live_... -- npx @testlyjs/mcp
+```
+`TESTLY_API_KEY` takes priority over config file.
 
 API key is available at: https://app.testly.com.br/settings
 
