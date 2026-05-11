@@ -6,6 +6,7 @@ import { createInterface } from 'readline';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import { spawnSync } from 'child_process';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -180,20 +181,49 @@ async function runSetup(): Promise<void> {
   println(`  ${c.green}${c.bold}✓ Configuração salva${c.reset}  ${c.dim}~/.testly/config.json${c.reset}`);
   println(`  ${c.dim}${'─'.repeat(54)}${c.reset}`);
   println();
-  println(`  Adicione ao ${c.bold}Claude Code${c.reset}:`);
-  println();
-  println(`  ${c.bgGreen}  claude mcp add testly -- npx @testlyjs/mcp  ${c.reset}`);
+
+  // ── Auto-add to Claude Code if CLI is available ──
+  const claudeCheck = spawnSync('which', ['claude'], { encoding: 'utf8' });
+  const claudeAvailable = claudeCheck.status === 0;
+
+  if (claudeAvailable) {
+    const answer = await ask(`  Adicionar ao ${c.bold}Claude Code${c.reset} automaticamente? ${c.dim}[S/n]${c.reset}: `);
+    const confirmed = !answer.trim() || answer.trim().toLowerCase() === 's';
+    if (confirmed) {
+      const result = spawnSync('claude', ['mcp', 'add', 'testly', '--', 'npx', '@testlyjs/mcp'], {
+        encoding: 'utf8',
+        stdio: 'pipe',
+      });
+      const alreadyExists = (result.stderr || '').includes('already exists') || (result.stdout || '').includes('already exists');
+      if (result.status === 0 || alreadyExists) {
+        println(`  ${c.green}✓ Claude Code configurado${c.reset}${alreadyExists ? c.dim + ' (já estava adicionado)' + c.reset : ''}`);
+      } else {
+        println(`  ${c.yellow}⚠ Não foi possível adicionar automaticamente.${c.reset}`);
+        println(`    Execute: ${c.dim}claude mcp add testly -- npx @testlyjs/mcp${c.reset}`);
+      }
+    } else {
+      println(`  Execute quando quiser:`);
+      println(`  ${c.bgGreen}  claude mcp add testly -- npx @testlyjs/mcp  ${c.reset}`);
+    }
+  } else {
+    println(`  Adicione ao seu editor:`);
+    println();
+    println(`  ${c.bold}Claude Code:${c.reset}`);
+    println(`  ${c.bgGreen}  claude mcp add testly -- npx @testlyjs/mcp  ${c.reset}`);
+    println();
+    println(`  ${c.bold}Cursor / Windsurf${c.reset} ${c.dim}(mcp.json):${c.reset}`);
+    println(`  ${c.dim}{ "testly": { "command": "npx", "args": ["@testlyjs/mcp"] } }${c.reset}`);
+  }
+
   println();
   println(`  ${c.dim}A chave fica armazenada localmente — nunca no histórico do shell.${c.reset}`);
   println();
+
   if (newConfig.devKey) {
-    println(`  Para usar o ambiente de ${c.bold}desenvolvimento${c.reset} (chave tk_test_):`);
-    println(`  Defina ${c.cyan}TESTLY_ENV=development${c.reset} no env do MCP.`);
-    println();
-    println(`  ${c.dim}Cursor/Windsurf (mcp.json):${c.reset}`);
-    println(`  ${c.dim}"env": { "TESTLY_ENV": "development" }${c.reset}`);
+    println(`  ${c.dim}Modo dev (chave tk_test_): defina TESTLY_ENV=development no env do MCP.${c.reset}`);
     println();
   }
+
   println(`  ${c.dim}Docs: docs.testly.com.br/ai-tools/claude-code${c.reset}`);
   println();
 }

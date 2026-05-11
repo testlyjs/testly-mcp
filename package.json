@@ -1,6 +1,6 @@
 {
   "name": "@testlyjs/mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Testly MCP server — create and manage A/B tests from Claude Code, Cursor, Windsurf and any MCP-compatible AI tool",
   "keywords": [
     "testly",
