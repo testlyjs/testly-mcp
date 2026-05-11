@@ -173,7 +173,6 @@ async function runSetup(): Promise<void> {
     }
   }
 
-  rl.close();
   writeConfig(newConfig);
 
   println();
@@ -226,6 +225,8 @@ async function runSetup(): Promise<void> {
 
   println(`  ${c.dim}Docs: docs.testly.com.br/ai-tools/claude-code${c.reset}`);
   println();
+
+  rl.close();
 }
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
